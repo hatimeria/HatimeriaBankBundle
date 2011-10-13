@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="bank.exchanger" class="Hatimeria\BankBundle\Bank\CurrencyExchanger" />
+        <service id="payment.manager" class="Hatimeria\BankBundle\Model\PaymentManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="bank" />
+            <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validateDotpayPayment" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="executeDotpayPayment" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validateSmsPayment" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="executeSmsPayment" />
+        </service>
+        <service id="bank" class="Hatimeria\BankBundle\Bank\Bank">
+            <argument type="service" id="bank.exchanger" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="bank_log.manager" />
+        </service>
+        <service id="bank_log.manager" class="Hatimeria\BankBundle\Model\BankLogManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+        </service>
+    </services>
+</container>
