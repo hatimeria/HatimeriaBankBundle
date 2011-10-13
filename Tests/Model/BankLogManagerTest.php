@@ -1,13 +1,13 @@
 <?php
 
-namespace Hatimeria\BankBundle\Tests\Entity;
+namespace Hatimeria\BankBundle\Tests\Model;
 
 use Hatimeria\FrameworkBundle\Test\TestCase;
 
 use Hatimeria\BankBundle\Model\BankLogManager;
 use Hatimeria\BankBundle\Bank\Transaction;
-use Hatimeria\BankBundle\Tests\TestAccount;
-use Hatimeria\BankBundle\Model\BankLog;
+use Hatimeria\BankBundle\Tests\TestEntity\Account;
+use Hatimeria\BankBundle\Tests\TestEntity\BankLog;
 
 class BankLogManagerTest extends TestCase
 {
@@ -19,7 +19,7 @@ class BankLogManagerTest extends TestCase
     public function testCreateLog()
     {
         $em  = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $blm = new BankLogManager($em);
+        $blm = $this->getManager($em);
 
         $log = $blm->createLog();
         $this->assertInstanceOf('Hatimeria\BankBundle\Model\BankLog', $log);
@@ -29,9 +29,9 @@ class BankLogManagerTest extends TestCase
     public function testCreateLogFromTransaction()
     {
         $em  = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $blm = new BankLogManager($em);
+        $blm = $this->getManager($em);
 
-        $account = new TestAccount();
+        $account = new Account();
 
         $t = new Transaction($account);
         $t->setAmount(1000);
@@ -51,13 +51,18 @@ class BankLogManagerTest extends TestCase
         $em  = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $em->expects($this->once())
             ->method('getRepository')
-            ->with('Hatimeria\BankBundle\Model\BankLog')
+            ->with('Hatimeria\BankBundle\Tests\TestEntity\BankLog')
             ->will($this->returnValue($repository));
         
-        $blm  = new BankLogManager($em);
+        $blm = $this->getManager($em);
         $repo = $blm->getRepository();
 
         $this->assertEquals($repository, $repo);
+    }
+    
+    public function getManager($em)
+    {
+        return new BankLogManager($em, 'Hatimeria\BankBundle\Tests\TestEntity');
     }
 
     public function testUpdateLog()
@@ -69,10 +74,10 @@ class BankLogManagerTest extends TestCase
             ->method('persist')
             ->with($log);
 
-        $blm = new BankLogManager($em);
+        $blm = $this->getManager($em);
         $blm->updateLog($log);
     }
-
+    
     public function testFindByAccount()
     {
         $repository = $this->getMockBuilder('\Doctrine\ORM\EntityRepository')->disableOriginalConstructor()->getMock();
@@ -85,10 +90,10 @@ class BankLogManagerTest extends TestCase
             ->method('getRepository')
             ->will($this->returnValue($repository));
 
-        $account = new TestAccount();
+        $account = new Account();
         $account->setId(9);
 
-        $blm = new BankLogManager($em);
+        $blm = $this->getManager($em);
         $blm->findByAccount($account);
     }
 

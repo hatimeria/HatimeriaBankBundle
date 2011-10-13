@@ -3,7 +3,7 @@ namespace Hatimeria\BankBundle\Tests\Bank;
 
 use Hatimeria\FrameworkBundle\Test\TestCase;
 
-use Hatimeria\BankBundle\Tests\TestAccount;
+use Hatimeria\BankBundle\Tests\TestEntity\Account;
 use Hatimeria\BankBundle\Bank\CurrencyExchanger;
 use Hatimeria\BankBundle\Bank\Bank;
 use Hatimeria\BankBundle\Bank\Transaction;
@@ -18,7 +18,7 @@ class BankTest extends TestCase
 {
     private function getAccount($balance)
     {
-        $account = new TestAccount();
+        $account = new Account();
         $account->setBalance($balance);
         
         return $account;
@@ -28,7 +28,7 @@ class BankTest extends TestCase
      * @param int $balance
      * @param \Hatimeria\BankBundle\Tests\TestAccount $account
      */
-    private function assertBalance($balance, TestAccount $account)
+    private function assertBalance($balance, Account $account)
     {
         $this->assertEquals($balance, $account->getBalance());
     }

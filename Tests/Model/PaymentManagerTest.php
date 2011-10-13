@@ -1,12 +1,12 @@
 <?php
 
-namespace Hatimeria\BankBundle\Tests\Entity;
+namespace Hatimeria\BankBundle\Tests\Model;
 
 use Hatimeria\FrameworkBundle\Test\TestCase;
 
-use Hatimeria\BankBundle\Tests\TestAccount;
+use Hatimeria\BankBundle\Tests\TestEntity\Account;
 use Hatimeria\BankBundle\Model\PaymentManager;
-use Hatimeria\BankBundle\Model\DotpayPayment;
+use Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment;
 use Hatimeria\BankBundle\Bank\Transaction;
 use Hatimeria\BankBundle\Bank\CurrencyExchanger;
 use Hatimeria\BankBundle\Model\Enum\DotpayPaymentStatus;
@@ -17,19 +17,24 @@ class PaymentManagerTest extends TestCase
     {
         $this->getService('payment.manager');
     }
+    
+    public function getManager($em, $bank)
+    {
+        return new PaymentManager($em, $bank, 'Hatimeria\BankBundle\Tests\TestEntity');
+    }
 
     public function testCreateDotpayPayment()
     {
         $em   = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
 
-        $account = new TestAccount();
+        $account = new Account();
         $account->setId(9);
 
         $dp = $pm->createDotpayPayment($account);
-        $this->assertInstanceOf('Hatimeria\BankBundle\Model\DotpayPayment', $dp);
+        $this->assertInstanceOf('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment', $dp);
         $this->assertNotEmpty($dp->getControl());
         $this->assertEquals($account, $dp->getAccount());
     }
@@ -49,7 +54,7 @@ class PaymentManagerTest extends TestCase
 
         $dp = new DotpayPayment();
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
         $pm->updateDotpayPayment($dp);
     }
 
@@ -60,13 +65,13 @@ class PaymentManagerTest extends TestCase
             ->method('findOneBy')
             ->with(array('control' => 'test'));
         $em   = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
-        $em->expects($this->once())
+        $em->expects($this->any())
             ->method('getRepository')
-            ->with('Hatimeria\BankBundle\Model\DotpayPayment')
+            ->with('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')
             ->will($this->returnValue($repository));
         $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
         $pm->findDotpayPaymentByControl('test');
     }
 
@@ -76,12 +81,12 @@ class PaymentManagerTest extends TestCase
         $repository->expects($this->once())
             ->method('findOneBy')
             ->with(array('control' => 'test1234'))
-            ->will($this->returnValue($this->getMock('Hatimeria\BankBundle\Model\DotpayPayment')));
+            ->will($this->returnValue($this->getMock('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')));
 
         $em = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $em->expects($this->once())
             ->method('getRepository')
-            ->with('Hatimeria\BankBundle\Model\DotpayPayment')
+            ->with('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')
             ->will($this->returnValue($repository));
         $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
 
@@ -97,7 +102,7 @@ class PaymentManagerTest extends TestCase
         $event->expects($this->atLeastOnce())
             ->method('markAsValid');
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
         $pm->validateDotpayPayment($event);
     }
 
@@ -111,7 +116,7 @@ class PaymentManagerTest extends TestCase
         $em = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $em->expects($this->once())
             ->method('getRepository')
-            ->with('Hatimeria\BankBundle\Model\DotpayPayment')
+            ->with('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')
             ->will($this->returnValue($repository));
         $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
 
@@ -127,13 +132,13 @@ class PaymentManagerTest extends TestCase
         $event->expects($this->atLeastOnce())
             ->method('markAsInvalid');
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
         $pm->validateDotpayPayment($event);
     }
 
     public function testExecuteDotpayPaymentFinished()
     {
-        $dp = $this->getMock('Hatimeria\BankBundle\Model\DotpayPayment');
+        $dp = $this->getMock('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment');
         $dp->expects($this->atLeastOnce())
             ->method('isFinished')
             ->will($this->returnValue(true));
@@ -147,7 +152,7 @@ class PaymentManagerTest extends TestCase
         $em = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $em->expects($this->once())
             ->method('getRepository')
-            ->with('Hatimeria\BankBundle\Model\DotpayPayment')
+            ->with('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')
             ->will($this->returnValue($repository));
         $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
 
@@ -164,7 +169,7 @@ class PaymentManagerTest extends TestCase
             ->method('setResult')
             ->with(false);
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
         $pm->executeDotpayPayment($event);
     }
 
@@ -174,7 +179,7 @@ class PaymentManagerTest extends TestCase
     public function testExecuteDotpayPaymentOtherStatus()
     {
         try {
-            $dp = $this->getMock('Hatimeria\BankBundle\Model\DotpayPayment');
+            $dp = $this->getMock('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment');
             $dp->expects($this->atLeastOnce())
                 ->method('isFinished')
                 ->will($this->returnValue(false));
@@ -188,7 +193,7 @@ class PaymentManagerTest extends TestCase
             $em = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
             $em->expects($this->once())
                 ->method('getRepository')
-                ->with('Hatimeria\BankBundle\Model\DotpayPayment')
+                ->with('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')
                 ->will($this->returnValue($repository));
             $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
 
@@ -205,7 +210,7 @@ class PaymentManagerTest extends TestCase
                 ->method('getSubject')
                 ->will($this->returnValue($response));
 
-            $pm = new PaymentManager($em, $bank);
+            $pm = $this->getManager($em, $bank);
             $pm->executeDotpayPayment($event);
         }
         catch (\Exception $e) {
@@ -217,14 +222,14 @@ class PaymentManagerTest extends TestCase
 
     public function testExecuteDotpayPayment()
     {
-        $account = new TestAccount();
+        $account = new Account();
 
         $t = new Transaction($account);
         $t->setAmount(431);
         $t->setCurrency(CurrencyExchanger::PLN);
         $t->setInformation('Doładowanie poprzez dotpay 3');
 
-        $dp = $this->getMock('Hatimeria\BankBundle\Model\DotpayPayment');
+        $dp = $this->getMock('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment');
         $dp->expects($this->atLeastOnce())
             ->method('isFinished')
             ->will($this->returnValue(false));
@@ -244,7 +249,7 @@ class PaymentManagerTest extends TestCase
         $em = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
         $em->expects($this->once())
             ->method('getRepository')
-            ->with('Hatimeria\BankBundle\Model\DotpayPayment')
+            ->with('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment')
             ->will($this->returnValue($repository));
         $bank = $this->getMockBuilder('\Hatimeria\BankBundle\Bank\Bank')->disableOriginalConstructor()->getMock();
         $bank->expects($this->atLeastOnce())
@@ -273,7 +278,7 @@ class PaymentManagerTest extends TestCase
             ->method('setResult')
             ->with(true);
 
-        $pm = new PaymentManager($em, $bank);
+        $pm = $this->getManager($em, $bank);
         $pm->executeDotpayPayment($event);
     }
 

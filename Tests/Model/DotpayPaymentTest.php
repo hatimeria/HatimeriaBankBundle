@@ -1,10 +1,10 @@
 <?php
 
-namespace Hatimeria\BankBundle\Tests\Entity;
+namespace Hatimeria\BankBundle\Tests\Model;
 
 use Hatimeria\FrameworkBundle\Test\TestCase;
 
-use Hatimeria\BankBundle\Tests\TestDotpayPayment;
+use Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment;
 use Hatimeria\BankBundle\Model\Enum\DotpayPaymentStatus;
 
 /**
@@ -17,7 +17,7 @@ class DotpayPaymentTest extends TestCase
 {
     public function testId()
     {
-        $dp = new TestDotpayPayment();
+        $dp = new DotpayPayment();
         $dp->setId(5);
 
         $this->assertEquals(5, $dp->getId());
@@ -25,7 +25,7 @@ class DotpayPaymentTest extends TestCase
 
     public function testAmount()
     {
-        $dp = new TestDotpayPayment();
+        $dp = new DotpayPayment();
         $dp->setAmount(15);
 
         $this->assertEquals(15, $dp->getAmount());
@@ -33,7 +33,7 @@ class DotpayPaymentTest extends TestCase
 
     public function testStatus()
     {
-        $dp = new TestDotpayPayment();
+        $dp = new DotpayPayment();
         $dp->setStatus(DotpayPaymentStatus::NONE);
 
         $this->assertEquals(DotpayPaymentStatus::NONE, $dp->getStatus());
@@ -41,7 +41,7 @@ class DotpayPaymentTest extends TestCase
 
     public function testIsFinished()
     {
-        $dp = new TestDotpayPayment();
+        $dp = new DotpayPayment();
         $dp->setStatus(DotpayPaymentStatus::NONE);
 
         $this->assertFalse($dp->isFinished());
@@ -53,7 +53,7 @@ class DotpayPaymentTest extends TestCase
 
     public function testIsCharge()
     {
-        $dp = new TestDotpayPayment();
+        $dp = new DotpayPayment();
         $dp->setIsCharge(true);
 
         $this->assertTrue($dp->getIsCharge());

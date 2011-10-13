@@ -1,10 +1,10 @@
 <?php
 
-namespace Hatimeria\BankBundle\Tests\Entity;
+namespace Hatimeria\BankBundle\Tests\Model;
 
 use Hatimeria\FrameworkBundle\Test\TestCase;
 
-use Hatimeria\BankBundle\Tests\TestAccount;
+use Hatimeria\BankBundle\Tests\TestEntity\Account;
 
 /**
  * This test is only other tests complement to pass code coverage
@@ -16,20 +16,10 @@ class AccountTest extends TestCase
 {
     public function testNewAccount()
     {
-        $account = new TestAccount();
+        $account = new Account();
 
         // newly created Account object has balance equals 0
         $this->assertEquals(0, $account->getBalance());
-    }
-
-    public function testUser()
-    {
-        $user = $this->getMock('Hatimeria\BankBundle\Model\User');
-
-        $account = new TestAccount();
-        $account->setUser($user);
-
-        $this->assertEquals($user, $account->getUser());
     }
 
 }

@@ -9,10 +9,10 @@ use Hatimeria\BankBundle\Bank\Bank;
 use Hatimeria\BankBundle\Bank\CurrencyExchanger;
 use Hatimeria\BankBundle\Model\Enum\DotpayPaymentStatus;
 use Hatimeria\BankBundle\Bank\Transaction;
+use Hatimeria\BankBundle\Bank\BankException;
 
 use Hatimeria\DotpayBundle\Event\ValidationEvent;
 use Hatimeria\DotpayBundle\Event\Event;
-
 use Hatimeria\DotpayBundle\Response\Response as DotpayResponse;
 use Hatimeria\DotpayBundle\Request\PremiumTc;
 
@@ -34,7 +34,6 @@ class PaymentManager
      * @var array
      */
     protected $smsConfiguration;
-    
     /**
      * DotpayPayment class path
      *
@@ -54,9 +53,6 @@ class PaymentManager
         $this->bank             = $bank;
         $this->dotpayClass      = $modelPath.'\DotpayPayment';
         $this->smsClass         = $modelPath.'\SmsPayment';
-        $this->dotpayRepository = $em->getRepository($this->dotpayClass);
-        $this->smsRepository    = $em->getRepository($this->smsClass);
-
         $this->smsConfiguration = array(
             '71068' => 10,
             '72068' => 20,
@@ -64,6 +60,24 @@ class PaymentManager
             '75068' => 50,
             '79068' => 90
         );
+    }
+    
+    public function getSmsRepository()
+    {
+        if($this->smsRepository == null) {
+            $this->smsRepository    = $this->em->getRepository($this->smsClass);
+        }
+        
+        return $this->smsRepository;
+    }
+    
+    public function getDotpayRepository()
+    {
+        if($this->dotpayRepository == null) {
+            $this->dotpayRepository = $this->em->getRepository($this->dotpayClass);        
+        }
+        
+        return $this->dotpayRepository;
     }
 
     public function createDotpayPayment(Account $account)
@@ -103,7 +117,7 @@ class PaymentManager
      */
     public function findDotpayPaymentByControl($control)
     {
-        return $this->dotpayRepository->findOneBy(array('control' => $control));
+        return $this->getDotpayRepository()->findOneBy(array('control' => $control));
     }
 
     /**
@@ -112,7 +126,7 @@ class PaymentManager
      */
     public function findSmsPaymentByCode($code)
     {
-        return $this->smsRepository->findOneBy(array('code' => $code));
+        return $this->getSmsRepository()->findOneBy(array('code' => $code));
     }
 
     public function validateDotpayPayment(ValidationEvent $event)
@@ -228,6 +242,33 @@ class PaymentManager
 
         $payment->setStatus(DotpayPaymentStatus::FINISHED);
         $this->updateSmsPayment($payment);
+    }
+    
+    public function createFromServiceName($account, $service)
+    {
+        $codes = explode('_',$service);
+        $formatException = new BankException("Invalid service code name");
+        
+        if(count($codes) != 3) {
+            throw $formatException;
+        }
+        
+        $type = array_shift($codes);
+        
+        switch ($type) {
+            case 'subscription':
+                break;
+            case 'credits':
+                break;
+            default:
+                throw $formatException;
+        }
+        
+        $payment   = $this->createDotpayPayment($account);
+        $payment->setAmount($credits);
+        $this->updateDotpayPayment($payment);
+        
+        return $payment;
     }
 
 }

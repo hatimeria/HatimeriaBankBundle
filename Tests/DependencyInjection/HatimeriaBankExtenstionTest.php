@@ -22,7 +22,6 @@ class HatimeriaBankExtensionTest extends TestCase
             ->method('addResource')
             ->with($resource);
 
-        $extension->load(array(), $container);
+        $extension->load(array(array('model_classes_path' => 'test')), $container);
     }
-
 }

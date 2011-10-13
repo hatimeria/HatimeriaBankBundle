@@ -1,10 +1,10 @@
 <?php
 
-namespace Hatimeria\BankBundle\Tests\Entity;
+namespace Hatimeria\BankBundle\Tests\Model;
 
 use Hatimeria\FrameworkBundle\Test\TestCase;
 
-use Hatimeria\BankBundle\Tests\TestBankLog;
+use Hatimeria\BankBundle\Tests\TestEntity\BankLog;
 
 /**
  * This test is only other tests complement to pass code coverage
@@ -16,7 +16,7 @@ class BankLogTest extends TestCase
 {
     public function testId()
     {
-        $log = new TestBankLog();
+        $log = new BankLog();
         $log->setId(5);
 
         $this->assertEquals(5, $log->getId());
@@ -26,7 +26,7 @@ class BankLogTest extends TestCase
     {
         $date = new \DateTime();
 
-        $log = new TestBankLog();
+        $log = new BankLog();
         $log->setInformation('test');
         $log->setAmount(1000);
 
