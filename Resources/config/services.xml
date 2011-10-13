@@ -5,8 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="bank.exchanger" class="Hatimeria\BankBundle\Bank\CurrencyExchanger" />
-        <service id="payment.manager" class="Hatimeria\BankBundle\Model\PaymentManager">
+        <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger" />
+        <service id="bank.payment.manager" class="Hatimeria\BankBundle\Model\PaymentManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>
@@ -20,6 +20,10 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank_log.manager" />
         </service>
+        <service id="bank.service.finder" class="Hatimeria\BankBundle\Service\Finder">
+            <argument type="service" id="subscription.manager" />
+            <argument type="service" id="currency.virtual.manager" />
+        </service>        
         <service id="bank_log.manager" class="Hatimeria\BankBundle\Model\BankLogManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>

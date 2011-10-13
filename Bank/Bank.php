@@ -2,7 +2,7 @@
 
 namespace Hatimeria\BankBundle\Bank;
 
-use Hatimeria\BankBundle\Bank\CurrencyExchanger;
+use Hatimeria\BankBundle\Currency\CurrencyCode;
 use Hatimeria\BankBundle\Model\Account;
 use Hatimeria\BankBundle\Bank\BankException;
 
@@ -37,14 +37,14 @@ class Bank
     
     public function addAmountToAccount($amount, $currency, Account $account)
     {
-        $cents = $this->exchanger->exchange($amount, $currency, CurrencyExchanger::MC);
+        $cents = $this->exchanger->exchange($amount, $currency, CurrencyCode::VIRTUAL);
         $account->addFunds($cents);
         $this->em->persist($account);
     }
 
     public function deposit(Transaction $transaction)
     {
-        $cents = $this->exchanger->exchange($transaction->getAmount(), $transaction->getCurrency(), CurrencyExchanger::MC);
+        $cents = $this->exchanger->exchange($transaction->getAmount(), $transaction->getCurrency(), CurrencyCode::VIRTUAL);
         $account = $transaction->getAccount();
         $account->addFunds($cents);
         $this->em->persist($account);

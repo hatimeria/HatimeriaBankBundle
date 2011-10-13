@@ -1,6 +1,6 @@
 <?php
 
-namespace Hatimeria\BankBundle\Bank;
+namespace Hatimeria\BankBundle\Currency;
 
 /**
  * Currency exchanger
@@ -9,12 +9,9 @@ namespace Hatimeria\BankBundle\Bank;
  *
  * @author michal
  */
-class CurrencyExchanger
+class Exchanger
 {
-    const MC = 'MC';
-    const PLN = 'PLN';
-    
-    // pln to mc ratio
+    // pln to virtual ratio
     private $ratio = 10;
     
     /**
@@ -31,12 +28,11 @@ class CurrencyExchanger
                 return $amount;
             }
         }
-        // @todo currency codes constant
-        if($originalCurrency == CurrencyExchanger::PLN) {
+        
+        if($originalCurrency == CurrencyCode::PLN) {
             return $amount*$this->ratio;
         } else {
             return $amount/$this->ratio;
         }
-        
     }
 }

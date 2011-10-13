@@ -22,7 +22,7 @@ class PaymentManagerTest extends TestCase
     {
         return new PaymentManager($em, $bank, 'Hatimeria\BankBundle\Tests\TestEntity');
     }
-
+    
     public function testCreateDotpayPayment()
     {
         $em   = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();

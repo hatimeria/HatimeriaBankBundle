@@ -33,12 +33,6 @@ class DotpayPayment
      */
     protected $amount;
     /**
-     * @ORM\Column(type="boolean", name="is_charge")
-     *
-     * @var bool
-     */
-    protected $isCharge;
-    /**
      * @ORM\ManyToOne(targetEntity="Hatimeria\BankBundle\Model\Account", cascade={"merge"})
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id")
      */
@@ -48,11 +42,17 @@ class DotpayPayment
      * @var int
      */
     protected $status;
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @var string
+     */
+    protected $service;    
     
     public function __construct()
     {
         $this->status   = DotpayPaymentStatus::NONE;
-        $this->isCharge = true;
+        $this->service  = 'charge';
     }
 
     /**
@@ -96,22 +96,6 @@ class DotpayPayment
     }
 
     /**
-     * @return boolean
-     */
-    public function getIsCharge()
-    {
-        return $this->isCharge;
-    }
-
-    /**
-     * @param boolean $isCharge
-     */
-    public function setIsCharge($isCharge)
-    {
-        $this->isCharge = $isCharge;
-    }
-
-    /**
      * @return \Hatimeria\BankBundle\Model\Account
      */
     public function getAccount()
@@ -144,5 +128,19 @@ class DotpayPayment
     {
         return DotpayPaymentStatus::FINISHED === $this->status;
     }
+    
+    public function getService()
+    {
+        return $this->service;
+    }
 
+    public function setService($code)
+    {
+        $this->service = $code;
+    }
+    
+    public function isCharge()
+    {
+        return $this->service == 'charge';
+    }
 }

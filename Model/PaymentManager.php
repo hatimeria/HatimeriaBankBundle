@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 use Hatimeria\BankBundle\Model\Account;
 use Hatimeria\BankBundle\Bank\Bank;
-use Hatimeria\BankBundle\Bank\CurrencyExchanger;
+use Hatimeria\BankBundle\Currency\CurrencyCode;
 use Hatimeria\BankBundle\Model\Enum\DotpayPaymentStatus;
 use Hatimeria\BankBundle\Bank\Transaction;
 use Hatimeria\BankBundle\Bank\BankException;
@@ -149,7 +149,7 @@ class PaymentManager
         $event->markAsInvalid();
     }
 
-    public function executeDotpayPayment(Event $event)
+   public function executeDotpayResponse(Event $event)
     {
         /* @var \Hatimeria\DotpayBundle\Response\Response $response */
         $response = $event->getSubject();
@@ -159,26 +159,38 @@ class PaymentManager
         }
 
         $dotpayPayment = $this->findDotpayPaymentByControl($response->getControl());
-
-        if ($dotpayPayment->isFinished()) {
+        
+        if ($payment->isFinished()) {
             return $event->setResult(false);
         }
         if (!$response->isStatusMade()) {
             //@todo Add code for other status
             throw new \Exception('Only status MADE is implemented :/');
         }
-
-        $transaction = new Transaction($dotpayPayment->getAccount());
-        $transaction->setAmount($response->getAmount());
-        $transaction->setCurrency(CurrencyExchanger::PLN);
-        $transaction->setInformation('Doładowanie poprzez dotpay ' . $response->getTransactionId());
-
-        $this->bank->deposit($transaction);
         
-        $dotpayPayment->setStatus(DotpayPaymentStatus::FINISHED);
-        $this->updateDotpayPayment($dotpayPayment);
-
+        //@todo save transcation id
+        
+        $this->executeDotpayPayment($payment);
+        
         $event->setResult(true);
+    }
+
+    public function executeDotpayPayment($payment)
+    {
+        $transaction = new Transaction($payment->getAccount());
+        $transaction->setAmount($payment->getAmount());
+        // @todo save currency in dotpay payment
+        $transaction->setCurrency(CurrencyCode::PLN);
+        $transaction->setInformation('Doładowanie poprzez dotpay ');
+
+        if($payment->isCharge()) {
+            $this->bank->deposit($transaction);
+        } else {
+            // @todo handle subscriptions adding to user
+        }
+        
+        $payment->setStatus(DotpayPaymentStatus::FINISHED);
+        $this->updateDotpayPayment($payment);
     }
 
     public function validateSmsPayment(ValidationEvent $event)
@@ -235,7 +247,7 @@ class PaymentManager
 
         $transaction = new Transaction($account);
         $transaction->setAmount($payment->getAmount());
-        $transaction->setCurrency(CurrencyExchanger::MC);
+        $transaction->setCurrency(CurrencyCode::VIRTUAL);
         $transaction->setInformation('Doładowanie poprzez sms');
 
         $this->bank->deposit($transaction);
@@ -244,31 +256,12 @@ class PaymentManager
         $this->updateSmsPayment($payment);
     }
     
-    public function createFromServiceName($account, $service)
+    public function createFromService($account, $service)
     {
-        $codes = explode('_',$service);
-        $formatException = new BankException("Invalid service code name");
-        
-        if(count($codes) != 3) {
-            throw $formatException;
-        }
-        
-        $type = array_shift($codes);
-        
-        switch ($type) {
-            case 'subscription':
-                break;
-            case 'credits':
-                break;
-            default:
-                throw $formatException;
-        }
-        
         $payment   = $this->createDotpayPayment($account);
-        $payment->setAmount($credits);
+        $payment->setAmount($service->getCost());
         $this->updateDotpayPayment($payment);
         
         return $payment;
     }
-
 }
