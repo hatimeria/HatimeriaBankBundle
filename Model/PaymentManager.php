@@ -34,13 +34,28 @@ class PaymentManager
      * @var array
      */
     protected $smsConfiguration;
+    
+    /**
+     * DotpayPayment class path
+     *
+     * @var string
+     */
+    protected $dotpayClass;
+    /**
+     * SmsPayment class path
+     *
+     * @var string
+     */
+    protected $smsClass;
 
     public function __construct(EntityManager $em, Bank $bank, $modelPath)
     {
         $this->em               = $em;
         $this->bank             = $bank;
-        $this->dotpayRepository = $em->getRepository($modelPath.'\DotpayPayment');
-        $this->smsRepository    = $em->getRepository($modelPath.'\SmsPayment');
+        $this->dotpayClass      = $modelPath.'\DotpayPayment';
+        $this->smsClass         = $modelPath.'\SmsPayment';
+        $this->dotpayRepository = $em->getRepository($this->dotpayClass);
+        $this->smsRepository    = $em->getRepository($this->smsClass);
 
         $this->smsConfiguration = array(
             '71068' => 10,
@@ -53,7 +68,7 @@ class PaymentManager
 
     public function createDotpayPayment(Account $account)
     {
-        $payment = new DotpayPayment();
+        $payment = new $this->dotpayClass;
         $payment->setAccount($account);
         $payment->setControl(md5($account->getId() . time()));
 
@@ -71,7 +86,7 @@ class PaymentManager
      */
     public function createSmsPayment()
     {
-        $payment = new SmsPayment();
+        $payment = new $this->smsClass;
 
         return $payment;
     }
