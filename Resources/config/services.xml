@@ -20,13 +20,9 @@
         </service>        
         <service id="bank.dotpay.transfer_receiver" class="Hatimeria\BankBundle\Payment\DotpayTransferReceiver">
             <argument type="service" id="bank.dotpay.payment_manager" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validate" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="execute" />
         </service>
         <service id="bank.dotpay.sms_receiver" class="Hatimeria\BankBundle\Payment\DotpaySmsReceiver">
             <argument type="service" id="bank.dotpay.sms_manager" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validate" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="execute" />
         </service>
         <service id="bank" class="Hatimeria\BankBundle\Bank\Bank">
             <argument type="service" id="bank.exchanger" />

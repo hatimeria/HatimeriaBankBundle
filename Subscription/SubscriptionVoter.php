@@ -56,7 +56,7 @@ class SubscriptionVoter implements VoterInterface
     {
         $result = VoterInterface::ACCESS_ABSTAIN;
         $roles = $this->extractRoles($token);
-
+        
         foreach ($attributes as $attribute) {
             if (!$this->supportsAttribute($attribute)) {
                 continue;
@@ -68,7 +68,14 @@ class SubscriptionVoter implements VoterInterface
                 return VoterInterface::ACCESS_GRANTED;
             } else {
                 $subscription = $user->getSubscription();
-                if(is_object($subscription) && $subscription->isValid()) {
+                $validSubscription = is_object($subscription) && $subscription->isValid();
+                if($validSubscription && $attribute == 'SUBSCRIPTION_ENABLED') {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                
+                $code = $subscription->getCode();
+                
+                if(strpos($code, strtolower($attribute)) === 0) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
             } 
