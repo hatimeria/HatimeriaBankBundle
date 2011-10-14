@@ -64,6 +64,10 @@ class SubscriptionVoter implements VoterInterface
             
             $user  = $token->getUser();
             
+            if(!is_object($user)) {
+                return VoterInterface::ACCESS_DENIED;
+            }
+            
             if($this->freeValidTo > new DateTime()) {
                 return VoterInterface::ACCESS_GRANTED;
             } else {
