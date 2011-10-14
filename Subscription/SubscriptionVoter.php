@@ -20,6 +20,7 @@ use \DateTime;
  */
 class SubscriptionVoter implements VoterInterface
 {
+
     private $freeValidTo, $prefix;
 
     /**
@@ -56,34 +57,36 @@ class SubscriptionVoter implements VoterInterface
     {
         $result = VoterInterface::ACCESS_ABSTAIN;
         $roles = $this->extractRoles($token);
-        
+
         foreach ($attributes as $attribute) {
             if (!$this->supportsAttribute($attribute)) {
                 continue;
             }
-            
-            $user  = $token->getUser();
-            
-            if(!is_object($user)) {
+
+            $user = $token->getUser();
+
+            if (!is_object($user)) {
                 return VoterInterface::ACCESS_DENIED;
             }
-            
-            if($this->freeValidTo > new DateTime()) {
+
+            if ($this->freeValidTo > new DateTime()) {
                 return VoterInterface::ACCESS_GRANTED;
             } else {
                 $subscription = $user->getSubscription();
                 $validSubscription = is_object($subscription) && $subscription->isValid();
-                if($validSubscription && $attribute == 'SUBSCRIPTION_ENABLED') {
-                    return VoterInterface::ACCESS_GRANTED;
+                if ($validSubscription) {
+                    if ($attribute == 'SUBSCRIPTION_ENABLED') {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
+
+                    $code = $subscription->getCode();
+
+                    if (strpos($code, strtolower($attribute)) === 0) {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
                 }
-                
-                $code = $subscription->getCode();
-                
-                if(strpos($code, strtolower($attribute)) === 0) {
-                    return VoterInterface::ACCESS_GRANTED;
-                }
-            } 
-            
+            }
+
             return VoterInterface::ACCESS_DENIED;
         }
 
@@ -94,4 +97,5 @@ class SubscriptionVoter implements VoterInterface
     {
         return $token->getRoles();
     }
+
 }
