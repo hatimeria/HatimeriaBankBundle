@@ -2,12 +2,14 @@
 
 namespace Hatimeria\BankBundle\Subscription;
 
+use Hatimeria\BankBundle\Service\Service;
+
 /**
  * Subscription
  *
  * @author Michal Wujas
  */
-class Subscription
+class Subscription extends Service
 {
     private $duration, $cost, $type;
     
@@ -26,5 +28,10 @@ class Subscription
     public function getCost()
     {
         return $this->cost;
+    }
+    
+    public function getDuration()
+    {
+        return $this->duration;
     }
 }

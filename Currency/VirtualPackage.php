@@ -2,12 +2,14 @@
 
 namespace Hatimeria\BankBundle\Currency;
 
+use Hatimeria\BankBundle\Service\Service;
+
 /**
  * Virtual Currency Package
  *
  * @author Michal Wujas
  */
-class VirtualPackage
+class VirtualPackage extends Service
 {
     private $amount, $cost;
     
@@ -25,5 +27,10 @@ class VirtualPackage
     public function getCost()
     {
         return $this->cost;
+    }
+    
+    public function getAmount()
+    {
+        return $this->amount;
     }
 }

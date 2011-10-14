@@ -36,18 +36,23 @@ class Finder
                     throw $formatException;
                 }
                 
-                return new Subscription($config[$subtype]['variants'][$variant], $config[$subtype]['name']);
+                $service = new Subscription($config[$subtype]['variants'][$variant], $config[$subtype]['name']);
                 
                 break;
             case 'credits':
+                $config = $this->packages->getConfig();
                 if(!isset($config[$subtype])) {
                     throw $formatException;
                 }
                 
-                return new VirtualPackage($config[$subtype][$variant]);
+                $service = new VirtualPackage($config[$subtype]);
                 break;
             default:
                 throw $formatException;
         }
+        
+        $service->setCode($code);
+        
+        return $service;
     }    
 }

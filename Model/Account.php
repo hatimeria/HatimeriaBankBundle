@@ -15,7 +15,7 @@ abstract class Account
      * @ORM\Column(type="integer")
      * @ORM\generatedValue(strategy="AUTO")
      */
-    protected $id;       
+    protected $id;
     /**
      * @ORM\Column(type="integer")
      *
@@ -75,5 +75,4 @@ abstract class Account
     {
         $this->frozen -= $amount;
     }
-
 }

@@ -67,8 +67,13 @@ class SubscriptionVoter implements VoterInterface
             if($this->freeValidTo > new DateTime()) {
                 return VoterInterface::ACCESS_GRANTED;
             } else {
-                return VoterInterface::ACCESS_DENIED;
-            }
+                $subscription = $user->getSubscription();
+                if($subscription->isValid()) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+            } 
+            
+            return VoterInterface::ACCESS_DENIED;
         }
 
         return $result;

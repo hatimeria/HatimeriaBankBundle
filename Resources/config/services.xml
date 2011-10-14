@@ -6,14 +6,27 @@
 
     <services>
         <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger" />
-        <service id="bank.payment.manager" class="Hatimeria\BankBundle\Model\PaymentManager">
+        <service id="bank.dotpay.payment_manager" class="Hatimeria\BankBundle\Model\PaymentManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validateDotpayPayment" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="executeDotpayPayment" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validateSmsPayment" />
-            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="executeSmsPayment" />
+            <argument type="service" id="bank.service.finder" />
+            <argument type="service" id="bank.subscription.adder" />
+        </service>
+        <service id="bank.dotpay.sms_manager" class="Hatimeria\BankBundle\Model\SmsManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="bank" />
+            <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+        </service>        
+        <service id="bank.dotpay.transfer_receiver" class="Hatimeria\BankBundle\Payment\DotpayReceiver">
+            <argument type="service" id="bank.dotpay.payment_manager" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validate" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="execute" />
+        </service>
+        <service id="bank.dotpay.sms_receiver" class="Hatimeria\BankBundle\Payment\DotpaySmsReceiver">
+            <argument type="service" id="bank.dotpay.sms_manager" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.pre_validate" method="validate" />
+            <tag name="kernel.event_listener" event="hatimeria_dotpay.execution" method="execute" />
         </service>
         <service id="bank" class="Hatimeria\BankBundle\Bank\Bank">
             <argument type="service" id="bank.exchanger" />
@@ -23,7 +36,11 @@
         <service id="bank.service.finder" class="Hatimeria\BankBundle\Service\Finder">
             <argument type="service" id="subscription.manager" />
             <argument type="service" id="currency.virtual.manager" />
-        </service>        
+        </service>
+        <service id="bank.subscription.adder" class="Hatimeria\BankBundle\Subscription\SubscriptionAdder">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+        </service>          
         <service id="bank_log.manager" class="Hatimeria\BankBundle\Model\BankLogManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>

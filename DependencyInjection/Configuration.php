@@ -6,7 +6,6 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-
 class Configuration implements ConfigurationInterface
 {
     /**
@@ -21,7 +20,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('model_classes_path')->isRequired()->end();
+                ->scalarNode('model_classes_path')->isRequired()->end()
+                ->booleanNode('fake_dotpay_response')->defaultFalse()->end();
         
         return $treeBuilder;
     }
