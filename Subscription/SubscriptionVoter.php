@@ -68,7 +68,7 @@ class SubscriptionVoter implements VoterInterface
                 return VoterInterface::ACCESS_GRANTED;
             } else {
                 $subscription = $user->getSubscription();
-                if($subscription->isValid()) {
+                if(is_object($subscription) && $subscription->isValid()) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
             } 
