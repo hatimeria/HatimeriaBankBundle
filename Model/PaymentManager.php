@@ -93,11 +93,13 @@ class PaymentManager
         $account = $payment->getAccount();
 
         if($payment->isCharge()) {
-            $transaction = new Transaction();
+            $transaction = new Transaction($account);
             $transaction->setAmount($payment->getAmount());
-            // @todo save currency in dotpay payment
             $transaction->setCurrency(CurrencyCode::PLN);
-            $transaction->setInformation('Doładowanie poprzez dotpay ');
+            // @todo better information, extensionable
+            $transaction->setInformation("Doładowanie konta");
+            $transaction->enableLogging();
+            
             $this->bank->deposit($transaction);
         } else {
             $service = $this->finder->code($payment->getService());
@@ -110,18 +112,33 @@ class PaymentManager
 
     public function createFromService($account, $service)
     {
-        $payment   = $this->createDotpayPayment($account);
+        $payment = $this->createDotpayPayment($account);
         $payment->setAmount($service->getCost());
         $payment->setService($service->getCode());
         $this->updateDotpayPayment($payment);
         
         return $payment;
     }
-    
-    private function addServiceToAccount($service, $account)
+    /**
+     * @todo move to better place
+     *
+     * @param type $service
+     * @param type $account 
+     */
+    public function addServiceToAccount($service, $account)
     {
         if($service instanceof VirtualPackage) {
-            $this->bank->addAmountToAccount($service->getAmount(), CurrencyCode::VIRTUAL, $account);
+            
+            $transaction = new Transaction($account);
+            $transaction->enableInvoice();
+            $transaction->enableLogging();
+            $transaction->setAmount($service->getCost());
+            $transaction->setVirtualAmount($service->getAmount());
+            $transaction->setInformation($service->getDescription());
+            $transaction->disableExchange();
+            
+            $this->bank->deposit($transaction);
+            
         } elseif($service instanceof SubscriptionService) {
             $this->sa->add($service, $account);
         } else {

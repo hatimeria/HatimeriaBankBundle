@@ -27,32 +27,66 @@ class Bank
      * @var \Hatimeria\BankBundle\Model\BankLogManager
      */
     private $blm;
-
-    public function __construct($exchanger, $em, $blm)
+    /**
+     * Invoice Manager
+     *
+     * @var \Hatimeria\BankBundle\Model\InvoiceManger
+     */
+    private $im;
+    
+    public function __construct($exchanger, $em, $blm, $im)
     {
         $this->exchanger = $exchanger;
         $this->em        = $em;
         $this->blm       = $blm;
+        $this->im        = $im;
+    }
+
+    protected function beforeTransaction(Transaction $transaction)
+    {
+        // @change me into event
+        if($transaction->needExchange()) {
+            $exchanged = $this->exchanger->exchange($transaction->getAmount(), $transaction->getCurrency(), CurrencyCode::VIRTUAL);
+            $transaction->setVirtualAmount($exchanged);
+        }
     }
     
-    public function addAmountToAccount($amount, $currency, Account $account)
+    protected function afterTransaction(Transaction $transaction)
     {
-        $cents = $this->exchanger->exchange($amount, $currency, CurrencyCode::VIRTUAL);
-        $account->addFunds($cents);
-        $this->em->persist($account);
-    }
+        // @change me into event
+        $this->em->persist($transaction->getAccount());
 
+        if($transaction->isLogginEnabled()) {
+            $this->blm->persistTransactionLog($transaction);
+        }
+        
+        if($transaction->isInvoiceEnabled()) {
+            $this->im->createFromTransaction($transaction);
+        }
+    }
+    
     public function deposit(Transaction $transaction)
     {
-        $cents = $this->exchanger->exchange($transaction->getAmount(), $transaction->getCurrency(), CurrencyCode::VIRTUAL);
+        $this->beforeTransaction($transaction);
+        
         $account = $transaction->getAccount();
-        $account->addFunds($cents);
-        $this->em->persist($account);
-
-        if ($transaction->hasInformation()) {
-            $log = $this->blm->createLog($transaction);
-            $this->blm->updateLog($log);
+        $account->addFunds($transaction->getVirtualAmount());
+        
+        $this->afterTransaction($transaction);
+    }    
+    
+    public function withdraw(Transaction $transaction)
+    {
+        $this->beforeTransaction($transaction);
+        $account = $transaction->getAccount();
+        
+        if($funds > $account->getBalance()) {
+            // @todo add more debug information
+            throw new NotEnoughFundException();
         }
+        
+        $account->removeFunds($funds);
+        $this->afterTransaction($transaction);
     }
 
     // @todo move round to int to rounding service
@@ -76,8 +110,9 @@ class Bank
     
     public function transferFunds(Account $original, Account $destination, $amount)
     {
+        // @todo change into dual transaction - withdraw and deposit
         if($original->getBalance() < $amount) {
-            throw new BankException("Not enough founds");
+            throw new NotEnoughFundException($message, $code, $previous);
         }
         
         $amount = $this->roundToInt($amount);

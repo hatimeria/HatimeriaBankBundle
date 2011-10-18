@@ -17,7 +17,7 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>
-        </service>        
+        </service>    
         <service id="bank.dotpay.transfer_receiver" class="Hatimeria\BankBundle\Payment\DotpayTransferReceiver">
             <argument type="service" id="bank.dotpay.payment_manager" />
         </service>
@@ -28,6 +28,7 @@
             <argument type="service" id="bank.exchanger" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank_log.manager" />
+            <argument type="service" id="bank.invoice.manager" />
         </service>
         <service id="bank.service.finder" class="Hatimeria\BankBundle\Service\Finder">
             <argument type="service" id="subscription.manager" />
@@ -36,10 +37,15 @@
         <service id="bank.subscription.adder" class="Hatimeria\BankBundle\Subscription\SubscriptionAdder">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+            <argument type="service" id="bank.invoice.manager" />
         </service>          
         <service id="bank_log.manager" class="Hatimeria\BankBundle\Model\BankLogManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>
         </service>
+        <service id="bank.invoice.manager" class="Hatimeria\BankBundle\Model\InvoiceManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+        </service>        
     </services>
 </container>

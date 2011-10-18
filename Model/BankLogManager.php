@@ -38,17 +38,27 @@ class BankLogManager
         return $this->repository;
     }
 
-    public function createLog(Transaction $transaction = null)
+    public function createLog()
     {
-        $log = new $this->class;
+        return new $this->class;
+    }
+    
+    public function createTransactionLog(Transaction $transaction)
+    {
+        $log = $this->createLog();
+        $log->setAccount($transaction->getAccount());
+        $log->setAmount($transaction->getAmount());
+        $log->setInformation($transaction->getInformation());
         
-        if (null !== $transaction) {
-            $log->setAccount($transaction->getAccount());
-            $log->setAmount($transaction->getAmount());
-            $log->setInformation($transaction->getInformation());
-        }
-
+        $transaction->setLog($log);
+        
         return $log;
+    }
+    
+    public function persistTransactionLog(Transaction $transaction)
+    {
+        $log = $this->createTransactionLog($transaction);
+        $this->updateLog($log);
     }
 
     public function updateLog(BankLog $log)
