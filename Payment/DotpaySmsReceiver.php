@@ -4,6 +4,7 @@ namespace Hatimeria\BankBundle\Payment;
 
 use Hatimeria\DotpayBundle\Event\ValidationEvent;
 use Hatimeria\DotpayBundle\Request\PremiumTc;
+use Hatimeria\DotpayBundle\Event\Event;
 use Hatimeria\BankBundle\Bank\Transaction;
 
 /**
