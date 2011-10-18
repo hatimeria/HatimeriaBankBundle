@@ -34,7 +34,7 @@ class DotpayTransferReceiver
             return;
         }
 
-        $dotpayPayment = $this->pm->findDotpayPaymentByControl($response->getControl());
+        $payment = $this->pm->findDotpayPaymentByControl($response->getControl());
 
         if ($payment->isFinished()) {
             return $event->setResult(false);
