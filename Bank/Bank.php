@@ -80,12 +80,12 @@ class Bank
         $this->beforeTransaction($transaction);
         $account = $transaction->getAccount();
         
-        if($funds > $account->getBalance()) {
+        if($transaction->getAmount() > $account->getBalance()) {
             // @todo add more debug information
             throw new NotEnoughFundException();
         }
         
-        $account->removeFunds($funds);
+        $account->removeFunds($transaction->getAmount());
         $this->afterTransaction($transaction);
     }
 

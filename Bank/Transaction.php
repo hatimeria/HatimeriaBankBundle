@@ -41,7 +41,7 @@ class Transaction
             $this->virtualAmount = $amount;
         }
         $this->logging  = false;
-        $this->invoice  = true;
+        $this->invoice  = false;
         $this->exchangeDisabled = false;
     }
 
