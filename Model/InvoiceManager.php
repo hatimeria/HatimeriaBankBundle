@@ -75,4 +75,12 @@ class InvoiceManager
     {
         return $this->repository->findOneBy(array("id" => $id));
     }    
+    
+    public function getQueryForUser($user)
+    {
+        $qb = $this->repository->createQueryBuilder("i");
+        $qb->andWhere("i.account = ".$user->getAccount()->getId());
+        
+        return $qb;
+    }
 }
