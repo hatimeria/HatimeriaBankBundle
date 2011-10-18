@@ -1,6 +1,6 @@
 <?php
 
-namespace Hatimeria\BankBundle\Bank\Payment;
+namespace Hatimeria\BankBundle\Payment;
 
 use Hatimeria\DotpayBundle\Response\Response as DotpayResponse;
 
