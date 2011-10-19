@@ -45,6 +45,10 @@ class InvoiceManager
     
     public function createFromTransaction(Transaction $transaction)
     {
+        if(!$transaction->getAccount()->getUser()->isAccountable()) {
+            return;
+        }
+        
         $invoice = new $this->class;
         $invoice->setAccount($transaction->getAccount());
         $invoice->setAmount($transaction->getAmount());
