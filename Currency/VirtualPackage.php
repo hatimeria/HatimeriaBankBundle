@@ -17,6 +17,7 @@ class VirtualPackage extends Service
     {
         $this->amount = $config['amount'];
         $this->cost     = $config['cost'];
+        $this->costWithoutTax     = $config['cost_without_tax'];
     }
     
     public function getDescription()

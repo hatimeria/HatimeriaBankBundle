@@ -9,7 +9,7 @@ namespace Hatimeria\BankBundle\Service;
  */
 abstract class Service
 {
-    private $code;
+    private $code, $costWithoutTax;
     
     public function getCode()
     {
@@ -19,5 +19,10 @@ abstract class Service
     public function setCode($code)
     {
         $this->code = $code;
+    }
+    
+    public function getCostWithoutTax()
+    {
+        return $this->costWithoutTax;
     }
 }
