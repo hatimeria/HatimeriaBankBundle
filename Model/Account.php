@@ -17,13 +17,13 @@ abstract class Account
      */
     protected $id;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      *
      * @var int
      */
     protected $balance;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      * 
      * @var int
      */

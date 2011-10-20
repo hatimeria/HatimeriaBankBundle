@@ -8,7 +8,7 @@ use Hatimeria\BankBundle\Tests\TestEntity\Account;
 use Hatimeria\BankBundle\Model\PaymentManager;
 use Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment;
 use Hatimeria\BankBundle\Bank\Transaction;
-use Hatimeria\BankBundle\Bank\CurrencyExchanger;
+use Hatimeria\BankBundle\Currency\CurrencyCode;
 use Hatimeria\BankBundle\Model\Enum\DotpayPaymentStatus;
 
 class PaymentManagerTest extends TestCase
@@ -226,7 +226,7 @@ class PaymentManagerTest extends TestCase
 
         $t = new Transaction($account);
         $t->setAmount(431);
-        $t->setCurrency(CurrencyExchanger::PLN);
+        $t->setCurrency(CurrencyCode::PLN);
         $t->setInformation('Doładowanie poprzez dotpay 3');
 
         $dp = $this->getMock('Hatimeria\BankBundle\Tests\TestEntity\DotpayPayment');

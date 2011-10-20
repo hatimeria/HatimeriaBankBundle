@@ -27,7 +27,6 @@ class InvoiceManager
     {
         $this->em = $em;
         $this->class = $modelPath.'\Invoice';
-        $this->repository = $em->getRepository($this->class);
     }
 
     /**
@@ -35,6 +34,10 @@ class InvoiceManager
      */
     public function getRepository()
     {
+        if(is_null($this->repository)) {
+            $this->repository = $em->getRepository($this->class);
+        }
+        
         return $this->repository;
     }
 

@@ -98,10 +98,9 @@ class Bank
     public function transferFrozenFunds(Account $original, Account $destination, $amount)
     {
         if($original->getFrozen() < $amount) {
-            throw new BankException(sprintf("Not enough FROZEN founds %d < %d", $original->getFrozen(), $amount));
+            throw new NotEnoughFundException(sprintf("Not enough FROZEN founds %d < %d", $original->getFrozen(), $amount));
         }
         
-        $amount = $this->roundToInt($amount);
         $original->removeFrozen($amount);
         $destination->addFunds($amount);
         $this->em->persist($original);
@@ -115,7 +114,6 @@ class Bank
             throw new NotEnoughFundException($message, $code, $previous);
         }
         
-        $amount = $this->roundToInt($amount);
         $original->removeFunds($amount);
         $destination->addFunds($amount);
         $this->em->persist($original);
@@ -125,7 +123,7 @@ class Bank
     public function freezeFunds(Account $account, $amount)
     {
         if($account->getBalance() < $amount) {
-            throw new BankException("Not enough founds");
+            throw new NotEnoughFundException("Not enough founds");
         }
         
         $account->freeze($amount);
