@@ -70,9 +70,13 @@ class InvoiceManager
         $qb->andWhere("i.year = ".date('Y'));
         $qb->andWhere("i.month = ".date('m'));
         $qb->select('max(i.number)');
-        $number = $qb->getQuery()->getFirstResult();
+        $number = $qb->getQuery()->getOneOrNullResult();
         
-        return (int)$number;
+        if($number) {
+            return $number[1];
+        } else {
+            return 0;
+        }
     }
 
     public function findOneById($id)

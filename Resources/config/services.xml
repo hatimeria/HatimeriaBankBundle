@@ -6,6 +6,13 @@
 
     <services>
         <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger" />
+        <service id="bank.currency.util.numberwords" class="Hatimeria\BankBundle\Currency\Util\NumberWords">
+            <argument type="string">%locale%</argument>
+        </service>           
+        <service id="hatimeria.twig.currency" class="Hatimeria\BankBundle\Twig\Extensions\Currency">
+            <argument type="service" id="service_container" />
+            <tag name="twig.extension" />
+        </service>        
         <service id="bank.dotpay.payment_manager" class="Hatimeria\BankBundle\Model\PaymentManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank" />
