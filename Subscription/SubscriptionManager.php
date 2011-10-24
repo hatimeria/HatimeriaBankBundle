@@ -13,6 +13,10 @@ class SubscriptionManager
     
     public function __construct($config)
     {
+        if(!is_array($config)) {
+            $config = array();
+        }
+        
         $this->config = $config;
         
         // @cleanup

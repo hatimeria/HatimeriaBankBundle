@@ -13,6 +13,10 @@ class VirtualManager
     
     public function __construct($config)
     {
+        if(!is_array($config)) {
+            $config = array();
+        }
+        
         $this->config = $config;
         foreach($this->config as &$variant) {
             $costWithTax = (1 + $this->getTax())*$variant['cost'];
