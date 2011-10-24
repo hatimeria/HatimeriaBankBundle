@@ -5,14 +5,14 @@ namespace Hatimeria\BankBundle\Currency;
 /**
  * Currency exchanger
  * 
- * supported currencies: PLN, MC - megacents
+ * supported currencies: PLN, Virtual
  *
  * @author michal
  */
 class Exchanger
 {
     // pln to virtual ratio
-    private $ratio = 10;
+    private $ratio = 1000;
     
     /**
      * Get exchanged amount
