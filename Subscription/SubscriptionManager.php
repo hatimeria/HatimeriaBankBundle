@@ -2,29 +2,23 @@
 
 namespace Hatimeria\BankBundle\Subscription;
 
+use Hatimeria\BankBundle\Service\Manager;
+
 /**
  * Subscriptions
  *
  * @author Michal Wujas
  */
-class SubscriptionManager
+class SubscriptionManager extends Manager
 {
-    private $config;
-    
-    public function __construct($config)
+    public function initalize()
     {
-        if(!is_array($config)) {
-            $config = array();
-        }
-        
-        $this->config = $config;
-        
-        // @cleanup
+        // @cleanup translations
         foreach($this->config as &$type) {
             foreach($type['variants'] as &$variant) {
-                $costWithTax = (1 + $this->getTax())*$variant['cost'];
-                $variant['cost_without_tax'] = $variant['cost'];
-                $variant['cost'] = $costWithTax;
+                
+                $variant = $this->calculatePrice($variant);
+
                 if($variant['duration'] == 365) {
                     $variant['duration_description'] = 'Rok';
                 } elseif($variant['duration'] == 182) {
@@ -34,15 +28,5 @@ class SubscriptionManager
                 }
             }
         }
-    }
-    
-    public function getConfig()
-    {
-        return $this->config;
-    }
-    
-    public function getTax()
-    {
-        return 0.23;
-    }    
+    } 
 }

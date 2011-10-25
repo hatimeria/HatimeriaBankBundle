@@ -21,6 +21,21 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('model_classes_path')->isRequired()->end()
+                ->arrayNode("subscriptions")
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('free_until')->defaultValue(false)->end()
+                        ->arrayNode('variants')
+                            ->ignoreExtraKeys()
+                            ->defaultValue(array())
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('virtual_packages')
+                    ->defaultValue(array())
+                    ->ignoreExtraKeys()
+                    ->addDefaultsIfNotSet()
+                ->end()
                 ->booleanNode('fake_dotpay_response')->defaultFalse()->end();
         
         return $treeBuilder;

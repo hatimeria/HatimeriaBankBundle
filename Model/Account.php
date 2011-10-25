@@ -19,20 +19,28 @@ abstract class Account
     /**
      * @ORM\Column(type="float")
      *
-     * @var int
+     * @var float
      */
     protected $balance;
     /**
      * @ORM\Column(type="float")
      * 
-     * @var int
+     * @var float
      */
     protected $frozen;
+    /**
+     * Percent number eq 10.5 = 10.5%
+     * @ORM\Column(type="float", name="subscription_discount")
+     *
+     * @var float
+     */
+    protected $subscriptionDiscount;
     
     public function __construct()
     {
         $this->balance = 0;
         $this->frozen = 0;
+        $this->subscriptionDiscount = 0;
     }
     
     public function getBalance()
@@ -74,5 +82,20 @@ abstract class Account
     public function removeFrozen($amount)
     {
         $this->frozen -= $amount;
+    }
+    
+    public function hasSubscriptionDiscount()
+    {
+        return $this->subscriptionDiscount !== 0;
+    }
+    
+    public function getSubscriptionDiscount()
+    {
+        return $this->subscriptionDiscount;
+    }
+    
+    public function hasFullSubscriptionDiscount()
+    {
+        return $this->getSubscriptionDiscount() === 100.00;
     }
 }
