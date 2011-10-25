@@ -27,6 +27,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('free_until')->defaultValue(false)->end()
                         ->arrayNode('variants')
                             ->ignoreExtraKeys()
+                            ->addDefaultsIfNotSet()
                             ->defaultValue(array())
                         ->end()
                     ->end()
