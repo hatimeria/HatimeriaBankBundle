@@ -35,7 +35,7 @@ class InvoiceManager
     public function getRepository()
     {
         if(is_null($this->repository)) {
-            $this->repository = $em->getRepository($this->class);
+            $this->repository = $this->em->getRepository($this->class);
         }
         
         return $this->repository;
@@ -69,7 +69,7 @@ class InvoiceManager
     public function findLastInvoiceNumber()
     {
         // @todo not working if there's more than one invoice in current request
-        $qb = $this->repository->createQueryBuilder("i");
+        $qb = $this->getRepository()->createQueryBuilder("i");
         $qb->andWhere("i.year = ".date('Y'));
         $qb->andWhere("i.month = ".date('m'));
         $qb->select('max(i.number)');
@@ -84,14 +84,19 @@ class InvoiceManager
 
     public function findOneById($id)
     {
-        return $this->repository->findOneBy(array("id" => $id));
+        return $this->getRepository()->findOneBy(array("id" => $id));
     }    
     
     public function getQueryForUser($user)
     {
-        $qb = $this->repository->createQueryBuilder("i");
+        $qb = $this->getRepository()->createQueryBuilder("i");
         $qb->andWhere("i.account = ".$user->getAccount()->getId());
         
         return $qb;
+    }
+    
+    public function getClass()
+    {
+        return $this->class;
     }
 }
