@@ -94,6 +94,11 @@ abstract class Account
         return $this->subscriptionDiscount;
     }
     
+    public function setSubscriptionDiscount($v)
+    {
+        $this->subscriptionDiscount = $v;
+    }
+    
     public function hasFullSubscriptionDiscount()
     {
         return $this->getSubscriptionDiscount() === 100.00;
