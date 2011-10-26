@@ -20,13 +20,14 @@ class HatimeriaBankExtension extends Extension
         
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         
-        if(isset($configs[0]["subscriptions"]["variants"])) {
-            $container->setParameter("hatimeria_bank.subscription.variants", $configs[0]["subscriptions"]["variants"]);
-        }
+        $subscriptions = isset($configs[0]["subscriptions"]["variants"]) ? 
+            $configs[0]["subscriptions"]["variants"] : $config["subscriptions"]["variants"];
         
-        if(isset($configs[0]["virtual_packages"])) {
-            $container->setParameter("hatimeria_bank.currency.virtual.packages", $configs[0]["virtual_packages"]);
-        }
+        $container->setParameter("hatimeria_bank.subscription.variants", $subscriptions);
+        
+        $virtuals = isset($configs[0]["virtual_packages"]) ? $configs[0]["virtual_packages"] : $config['virtual_packages'];
+        
+        $container->setParameter("hatimeria_bank.currency.virtual.packages", $virtuals);
         
         foreach (array('services') as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
