@@ -62,7 +62,7 @@ class SubscriptionAdder
         return $this->isEnabledInvoicing;
     }
     
-    public function disableServiceInvoicing()
+    public function disableInvoicing()
     {
         $this->isEnabledInvoicing = false;
     }    
