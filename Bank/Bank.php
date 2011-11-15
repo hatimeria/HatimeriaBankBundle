@@ -98,7 +98,8 @@ class Bank
     public function transferFrozenFunds(Account $original, Account $destination, $amount)
     {
         if($original->getFrozen() < $amount) {
-            throw new NotEnoughFundException(sprintf("Not enough FROZEN founds %d < %d", $original->getFrozen(), $amount));
+            throw new NotEnoughFundException(sprintf("Not enough FROZEN founds %.30f < %.30f missing %.30f", $original->getFrozen(), $amount,
+               $amount - $original->getFrozen()));
         }
         
         $original->removeFrozen($amount);
@@ -146,6 +147,11 @@ class Bank
         $qb->andWhere('e.account = '. $account->getId());
 
         return $qb;
+    }
+
+    public static function roundValue($val)
+    {
+        return round($val, 14, PHP_ROUND_HALF_DOWN);
     }
 
 }
