@@ -21,6 +21,12 @@ class SubscriptionAdder
      * @var Hatimeria\BankBundle\Model\InvoiceManager
      */
     private $im;
+    /**
+     * Mark service transaction as invoice ready ?
+     *
+     * @var bool
+     */
+    protected $isEnabledInvoicing = true;    
     
     public function __construct($em, $modelPath, $im)
     {
@@ -50,4 +56,14 @@ class SubscriptionAdder
         $this->em->persist($user);
         $this->em->flush();
     }
+    
+    public function isEnabledInvoicing()
+    {
+        return $this->isEnabledInvoicing;
+    }
+    
+    public function disableInvoicing()
+    {
+        $this->isEnabledInvoicing = false;
+    }    
 }

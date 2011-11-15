@@ -37,7 +37,7 @@ abstract class Manager
     public function getCurrentAccount()
     {
         if($this->currentAccount === null) {
-            if($this->security->isGranted("ROLE_USER")) {
+            if($this->security->getToken() != null && $this->security->isGranted("ROLE_USER")) {
                 $this->currentAccount = $this->security->getToken()->getUser()->getAccount();
             } else {
                 $this->currentAccount = false;
