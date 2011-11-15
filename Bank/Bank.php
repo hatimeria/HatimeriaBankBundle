@@ -149,9 +149,12 @@ class Bank
         return $qb;
     }
 
-    public static function roundValue($val)
+    public static function roundValue($val, $scale = null)
     {
-        return round($val, 14, PHP_ROUND_HALF_DOWN);
+        if (null === $scale) {
+            $scale = 14;
+        }
+        return round($val, $scale, PHP_ROUND_HALF_DOWN);
     }
 
 }
