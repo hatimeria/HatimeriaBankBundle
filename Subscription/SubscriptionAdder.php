@@ -46,15 +46,18 @@ class SubscriptionAdder
         
         $user->setSubscription($subscription);
         
-        $invoice = $this->im->create();
-        $invoice->setAccount($account);
-        $invoice->setAmount($service->getCost());
-        $invoice->setTitle($service->getDescription());
-        $invoice->generateNumber($this->im);
-        $this->em->persist($invoice);
+        if($user->isAccountable()) {
+            $invoice = $this->im->create();
+            $invoice->setAccount($account);
+            $invoice->setAmount($service->getCost());
+            $invoice->setTitle($service->getDescription());
+            $invoice->generateNumber($this->im);
+            $this->em->persist($invoice);
+        }
+        
         // @todo use configurable user manager instead
         $this->em->persist($user);
-        $this->em->flush();
+        $this->em->flush();        
     }
     
     public function isEnabledInvoicing()
