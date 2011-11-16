@@ -69,21 +69,21 @@ class SubscriptionVoter implements VoterInterface
                 return VoterInterface::ACCESS_DENIED;
             }
 
-            if ($this->freeValidTo > new DateTime()) {
+            if ($this->freeValidTo > new DateTime() && $attribute == 'SUBSCRIPTION_ENABLED') {
                 return VoterInterface::ACCESS_GRANTED;
-            } else {
-                $subscription = $user->getSubscription();
-                $validSubscription = is_object($subscription) && $subscription->isValid();
-                if ($validSubscription) {
-                    if ($attribute == 'SUBSCRIPTION_ENABLED') {
-                        return VoterInterface::ACCESS_GRANTED;
-                    }
+            }
+            
+            $subscription = $user->getSubscription();
+            $validSubscription = is_object($subscription) && $subscription->isValid();
+            if ($validSubscription) {
+                if ($attribute == 'SUBSCRIPTION_ENABLED') {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
 
-                    $code = $subscription->getCode();
+                $code = $subscription->getCode();
 
-                    if (strpos($code, strtolower($attribute)) === 0) {
-                        return VoterInterface::ACCESS_GRANTED;
-                    }
+                if (strpos($code, strtolower($attribute)) === 0) {
+                    return VoterInterface::ACCESS_GRANTED;
                 }
             }
 
