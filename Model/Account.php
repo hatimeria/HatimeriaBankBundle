@@ -3,6 +3,7 @@
 namespace Hatimeria\BankBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Hatimeria\BankBundle\Bank\Bank;
 
 /**
  * @ORM\MappedSuperclass
@@ -50,12 +51,12 @@ abstract class Account
     
     public function removeFunds($amount)
     {
-        $this->balance -= $amount;
+        $this->balance = Bank::roundValue($this->balance - $amount);
     }
     
     public function addFunds($amount)
     {
-        $this->balance += $amount;
+        $this->balance = Bank::roundValue($this->balance + $amount);
     }
     
     public function setBalance($balance)
@@ -70,8 +71,8 @@ abstract class Account
 
     public function freeze($amount)
     {
-        $this->balance -= $amount;
-        $this->frozen += $amount;
+        $this->bank = Bank::roundValue($this->balance - $amount);
+        $this->frozen = Bank::roundValue($this->frozen += $amount);
     }
     
     public function getFrozen()
@@ -81,7 +82,7 @@ abstract class Account
     
     public function removeFrozen($amount)
     {
-        $this->frozen -= $amount;
+        $this->frozen = Bank::roundValue($this->frozen - $amount);
     }
     
     public function hasSubscriptionDiscount()
