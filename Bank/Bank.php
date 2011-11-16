@@ -5,6 +5,7 @@ namespace Hatimeria\BankBundle\Bank;
 use Hatimeria\BankBundle\Currency\CurrencyCode;
 use Hatimeria\BankBundle\Model\Account;
 use Hatimeria\BankBundle\Bank\BankException;
+use Hatimeria\BankBundle\Decimal\Decimal;
 
 /**
  * MegaTotal Bank, handle currency conversion, megacents
@@ -79,8 +80,8 @@ class Bank
     {
         $this->beforeTransaction($transaction);
         $account = $transaction->getAccount();
-        
-        if($transaction->getAmount() > $account->getBalance()) {
+
+        if (bccomp($transaction->getAmount(), $account->getBalance(), Decimal::SCALE) === 1) {
             // @todo add more debug information
             throw new NotEnoughFundException();
         }
@@ -97,7 +98,7 @@ class Bank
     
     public function transferFrozenFunds(Account $original, Account $destination, $amount)
     {
-        if($original->getFrozen() < $amount) {
+        if (bccomp($original->getFrozen(), $amount, Decimal::SCALE) === -1) {
             throw new NotEnoughFundException(sprintf("Not enough FROZEN founds %.30f < %.30f missing %.30f", $original->getFrozen(), $amount,
                $amount - $original->getFrozen()));
         }
@@ -111,8 +112,9 @@ class Bank
     public function transferFunds(Account $original, Account $destination, $amount)
     {
         // @todo change into dual transaction - withdraw and deposit
-        if($original->getBalance() < $amount) {
-            throw new NotEnoughFundException($message, $code, $previous);
+
+        if (bccomp($original->getBalance(), $amount, Decimal::SCALE) === -1) {
+            throw new NotEnoughFundException("Not enough founds");
         }
         
         $original->removeFunds($amount);
@@ -123,7 +125,7 @@ class Bank
     
     public function freezeFunds(Account $account, $amount)
     {
-        if($account->getBalance() < $amount) {
+        if (bccomp($account->getBalance(), $amount, Decimal::SCALE) === -1) {
             throw new NotEnoughFundException("Not enough founds");
         }
         
@@ -147,14 +149,6 @@ class Bank
         $qb->andWhere('e.account = '. $account->getId());
 
         return $qb;
-    }
-
-    public static function roundValue($val, $scale = null)
-    {
-        if (null === $scale) {
-            $scale = 14;
-        }
-        return round($val, $scale, PHP_ROUND_HALF_DOWN);
     }
 
 }
