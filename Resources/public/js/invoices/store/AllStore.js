@@ -2,7 +2,7 @@
     Ext.require("HatimeriaBank.invoices.model.InvoiceModel");
 
     Ext.define("HatimeriaBank.invoices.store.AllStore", {
-         extend: "HatimeriaAdmin.core.store.BaseStore",
+         extend: "Hatimeria.core.store.BaseStore",
          
          /**
           * Constructor
