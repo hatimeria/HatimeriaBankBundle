@@ -3,6 +3,8 @@
 namespace Hatimeria\BankBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Hatimeria\BankBundle\Bank\Bank;
+use Hatimeria\BankBundle\Decimal\Decimal;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,13 +19,13 @@ abstract class Account
      */
     protected $id;
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="decimal", precision=60, scale=14)
      *
      * @var float
      */
     protected $balance;
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="decimal", precision=60, scale=14)
      * 
      * @var float
      */
@@ -50,12 +52,20 @@ abstract class Account
     
     public function removeFunds($amount)
     {
-        $this->balance -= $amount;
+        if (!$amount instanceof Decimal) {
+            $amount = new Decimal($amount);
+        }
+
+        $this->balance = Decimal::create($this->balance)->sub($amount)->getAmount();
     }
     
     public function addFunds($amount)
     {
-        $this->balance += $amount;
+        if (!$amount instanceof Decimal) {
+            $amount = new Decimal($amount);
+        }
+        
+        $this->balance = Decimal::create($this->balance)->add($amount)->getAmount();
     }
     
     public function setBalance($balance)
@@ -70,8 +80,12 @@ abstract class Account
 
     public function freeze($amount)
     {
-        $this->balance -= $amount;
-        $this->frozen += $amount;
+        if (!$amount instanceof Decimal) {
+            $amount = new Decimal($amount);
+        }
+
+        $this->balance = Decimal::create($this->balance)->sub($amount)->getAmount();
+        $this->frozen  = Decimal::create($this->frozen)->add($amount)->getAmount();
     }
     
     public function getFrozen()
@@ -81,7 +95,11 @@ abstract class Account
     
     public function removeFrozen($amount)
     {
-        $this->frozen -= $amount;
+        if (!$amount instanceof Decimal) {
+            $amount = new Decimal($amount);
+        }
+
+        $this->frozen = Decimal::create($this->frozen)->sub($amount)->getAmount();
     }
     
     public function hasSubscriptionDiscount()
@@ -103,4 +121,5 @@ abstract class Account
     {
         return $this->getSubscriptionDiscount() === 100.00;
     }
+
 }
