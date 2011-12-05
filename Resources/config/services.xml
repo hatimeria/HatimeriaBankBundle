@@ -71,5 +71,8 @@
             <argument key="config">%hatimeria_bank.currency.virtual.packages%</argument>
             <argument type="service" id="security.context" />
         </service>
+        <service id="bank.user_discount.form.type" class="Hatimeria\BankBundle\Form\Type\UserDiscountFormyType">
+            <tag name="hatimeria_admin.user.form.extension"/>
+        </service>
     </services>
 </container>
