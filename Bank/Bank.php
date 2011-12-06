@@ -34,13 +34,18 @@ class Bank
      * @var \Hatimeria\BankBundle\Model\InvoiceManger
      */
     private $im;
+    /**
+     * @var string
+     */
+    private $userClass;
     
-    public function __construct($exchanger, $em, $blm, $im)
+    public function __construct($exchanger, $em, $blm, $im, $userClass)
     {
         $this->exchanger = $exchanger;
         $this->em        = $em;
         $this->blm       = $blm;
         $this->im        = $im;
+        $this->userClass = $userClass;
     }
 
     protected function beforeTransaction(Transaction $transaction)
@@ -149,6 +154,19 @@ class Bank
         $qb->andWhere('e.account = '. $account->getId());
 
         return $qb;
+    }
+
+    public function getMappings()
+    {
+        if ($this->userClass) {
+            return array(
+                $this->userClass => array(
+                    'fields' => array(
+                        'default' => array('discount')
+                    )
+                )
+            );
+        }
     }
 
 }

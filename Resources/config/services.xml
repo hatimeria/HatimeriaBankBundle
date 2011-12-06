@@ -40,6 +40,8 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank_log.manager" />
             <argument type="service" id="bank.invoice.manager" />
+            <argument />
+            <tag name="hatimeria_extjs.mappings"/>
         </service>
         <service id="bank.service.finder" class="Hatimeria\BankBundle\Service\Finder">
             <argument type="service" id="subscription.manager" />
