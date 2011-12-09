@@ -21,6 +21,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('model_classes_path')->isRequired()->end()
+                ->scalarNode('exchanger_ratio')->defaultValue('1000')->end()
                 ->arrayNode("subscriptions")
                     ->addDefaultsIfNotSet()
                     ->children()

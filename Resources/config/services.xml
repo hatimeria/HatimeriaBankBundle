@@ -5,7 +5,9 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger" />
+        <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger">
+            <argument>%hatimeria_bank.exchanger_ratio%</argument>
+        </service>
         <service id="bank.currency.util.numberwords" class="Hatimeria\BankBundle\Currency\Util\NumberWords">
             <argument type="string">%locale%</argument>
         </service>           
