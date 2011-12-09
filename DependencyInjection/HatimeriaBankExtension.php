@@ -38,6 +38,14 @@ class HatimeriaBankExtension extends Extension
         foreach (array('services') as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
         }
+
+        if (in_array('FOS\UserBundle\FOSUserBundle', $container->getParameter('kernel.bundles'))) {
+
+            $fos_class = $container->getParameterBag()->resolveValue($container->getParameterBag()->get('fos_user.model.user.class'));
+
+            $builder = $container->getDefinition('bank');
+            $builder->replaceArgument(4, $fos_class);
+        }
     }
     
     public function updateParameters($config, ContainerBuilder $container, $ns = '')
