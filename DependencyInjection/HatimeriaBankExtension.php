@@ -15,7 +15,13 @@ class HatimeriaBankExtension extends Extension
         $processor     = new Processor();
         $configuration = new Configuration();
         $config = $processor->processConfiguration($configuration, $configs);
-        
+
+        $smsConfiguration = $config['sms_configuration'];
+
+        unset($config['sms_configuration']);
+
+        $container->setParameter('hatimeria_bank.sms_configuration', $smsConfiguration);
+
         $this->updateParameters($config, $container, 'hatimeria_bank.');
         
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

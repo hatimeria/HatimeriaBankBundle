@@ -46,18 +46,12 @@ class SmsManager
      */
     protected $class;
 
-    public function __construct(EntityManager $em, Bank $bank, $modelPath)
+    public function __construct(EntityManager $em, Bank $bank, $modelPath, $configuration)
     {
         $this->em               = $em;
         $this->bank             = $bank;
         $this->class            = $modelPath.'\SmsPayment';
-        $this->configuration    = array(
-            '71068' => 10,
-            '72068' => 20,
-            '73068' => 30,
-            '75068' => 50,
-            '79068' => 90
-        );
+        $this->configuration    = $configuration;
     }
     
     public function getRepository()
@@ -110,4 +104,10 @@ class SmsManager
         $payment->setStatus(DotpayPaymentStatus::FINISHED);
         $this->updateSmsPayment($payment);
     }
+
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
 }

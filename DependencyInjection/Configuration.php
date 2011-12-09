@@ -37,8 +37,15 @@ class Configuration implements ConfigurationInterface
                     ->ignoreExtraKeys()
                     ->addDefaultsIfNotSet()
                 ->end()
+                ->arrayNode('sms_configuration')
+                    ->addDefaultsIfNotSet()
+                    ->defaultValue(array())
+                    ->useAttributeAsKey('key')
+                    ->prototype('scalar')
+                    ->end()
+                ->end()
                 ->booleanNode('fake_dotpay_response')->defaultFalse()->end();
-        
+
         return $treeBuilder;
     }
     
