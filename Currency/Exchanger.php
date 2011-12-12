@@ -41,7 +41,7 @@ class Exchanger
         if($originalCurrency == CurrencyCode::PLN) {
             return $amount->mul($this->ratio)->getAmount();
         } else {
-            return $amount/$this->ratio;
+            return $amount->getAmount()/$this->ratio;
         }
     }
 }
