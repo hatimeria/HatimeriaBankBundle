@@ -22,7 +22,7 @@ abstract class BankLog
      */
     protected $account;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=60, scale=14)
      */
     protected $amount;
     /**
