@@ -35,7 +35,13 @@
 
             Ext.apply(this, Ext.apply(config, this.initialConfig));
             this.callParent();
+        },
+
+        getContextMenuItems: function(record, index)
+        {
+            return [];
         }
+
     });
     
 /** Year and month picker to download all invoices from current month
