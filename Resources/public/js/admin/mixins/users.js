@@ -1,9 +1,7 @@
 /**
  * Users panel for AdminBundle
  */
-Ext.require("Hatimeria.core.utils.ConfigManager");
-
-Ext.onReady(function() {
+Ext.require("Hatimeria.core.utils.ConfigManager", function(){
     
     var manager = Ext.ClassManager.get("Hatimeria.core.utils.ConfigManager");
     
@@ -31,5 +29,4 @@ Ext.onReady(function() {
             
         }
     });
-    
 });
