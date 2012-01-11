@@ -21,6 +21,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('model_classes_path')->isRequired()->end()
+                ->scalarNode('exchanger_ratio')->defaultValue('1000')->end()
                 ->arrayNode("subscriptions")
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -37,8 +38,15 @@ class Configuration implements ConfigurationInterface
                     ->ignoreExtraKeys()
                     ->addDefaultsIfNotSet()
                 ->end()
+                ->arrayNode('sms_configuration')
+                    ->addDefaultsIfNotSet()
+                    ->defaultValue(array())
+                    ->useAttributeAsKey('key')
+                    ->prototype('scalar')
+                    ->end()
+                ->end()
                 ->booleanNode('fake_dotpay_response')->defaultFalse()->end();
-        
+
         return $treeBuilder;
     }
     

@@ -5,7 +5,9 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger" />
+        <service id="bank.exchanger" class="Hatimeria\BankBundle\Currency\Exchanger">
+            <argument>%hatimeria_bank.exchanger_ratio%</argument>
+        </service>
         <service id="bank.currency.util.numberwords" class="Hatimeria\BankBundle\Currency\Util\NumberWords">
             <argument type="string">%locale%</argument>
         </service>           
@@ -24,6 +26,7 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="bank" />
             <argument type="string">%hatimeria_bank.model_classes_path%</argument>
+            <argument>%hatimeria_bank.sms_configuration%</argument>
         </service>    
         <service id="bank.dotpay.transfer_receiver" class="Hatimeria\BankBundle\Payment\DotpayTransferReceiver">
             <argument type="service" id="bank.dotpay.payment_manager" />

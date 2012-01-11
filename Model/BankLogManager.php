@@ -47,7 +47,7 @@ class BankLogManager
     {
         $log = $this->createLog();
         $log->setAccount($transaction->getAccount());
-        $log->setAmount($transaction->getAmount());
+        $log->setAmount($transaction->getVirtualAmount());
         $log->setInformation($transaction->getInformation());
         
         $transaction->setLog($log);

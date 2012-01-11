@@ -2,6 +2,8 @@
 
 namespace Hatimeria\BankBundle\Currency;
 
+use Hatimeria\BankBundle\Decimal\Decimal;
+
 /**
  * Currency exchanger
  * 
@@ -12,8 +14,13 @@ namespace Hatimeria\BankBundle\Currency;
 class Exchanger
 {
     // pln to virtual ratio
-    private $ratio = 1000;
-    
+    private $ratio;
+
+    public function __construct($ratio)
+    {
+        $this->ratio = $ratio;
+    }
+
     /**
      * Get exchanged amount
      *
@@ -28,11 +35,13 @@ class Exchanger
                 return $amount;
             }
         }
-        
+
+        $amount = new Decimal($amount);
+
         if($originalCurrency == CurrencyCode::PLN) {
-            return $amount*$this->ratio;
+            return $amount->mul($this->ratio)->getAmount();
         } else {
-            return $amount/$this->ratio;
+            return $amount->getAmount()/$this->ratio;
         }
     }
 }

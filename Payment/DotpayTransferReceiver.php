@@ -14,9 +14,7 @@ use Hatimeria\DotpayBundle\Response\Response as DotpayResponse;
 class DotpayTransferReceiver
 {
     /**
-     * PaymentManager
-     *
-     * @var type 
+     * @var \Hatimeria\BankBundle\Model\PaymentManager
      */
     private $pm;
     
