@@ -1,6 +1,6 @@
 (function() {
     Ext.define('HatimeriaBank.invoices.InvoicesPanel', {   
-        extend: 'HatimeriaAdmin.core.grid.BaseGrid',
+        extend: 'Hatimeria.core.grid.BaseGrid',
         initComponent: function()
         {
             var store = Ext.create('HatimeriaBank.invoices.store.AllStore');
@@ -35,11 +35,6 @@
 
             Ext.apply(this, Ext.apply(config, this.initialConfig));
             this.callParent();
-        },
-
-        getContextMenuItems: function(record, index)
-        {
-            return [];
         }
 
     });
