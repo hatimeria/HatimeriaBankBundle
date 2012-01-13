@@ -17,13 +17,7 @@
                 ],
                 viewConfig: {
                     forceFit: true
-                },
-                bbar: Ext.create('Ext.PagingToolbar', {
-                    store: store,
-                    displayInfo: true,
-                    displayMsg: 'Rekordy {0} - {1} of {2}',
-                    emptyMsg: "Brak rekordów"
-                })
+                }
             };
 
             this.listeners = {
