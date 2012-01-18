@@ -1,6 +1,7 @@
 (function() {
     Ext.define('HatimeriaBank.invoices.InvoicesPanel', {   
         extend: 'Hatimeria.core.grid.BaseGrid',
+        actionColumn: false,
         initComponent: function()
         {
             var store = Ext.create('HatimeriaBank.invoices.store.AllStore');
@@ -21,11 +22,11 @@
             };
 
             this.listeners = {
-            itemclick: {
-                fn: function(view, record){ 
-                    window.location = Routing.generate("invoice_download", {id: record.get('id')});
-                }
-            }};            
+                itemclick: {
+                    fn: function(view, record){ 
+                        window.location = Routing.generate("invoice_download", {id: record.get('id')});
+                    }
+            }};
 
             Ext.apply(this, Ext.apply(config, this.initialConfig));
             this.callParent();
@@ -33,29 +34,4 @@
 
     });
     
-/** Year and month picker to download all invoices from current month
- *             {
-                margin: 20,
-                width: 300,
-                border: 0,
-                id: 'invoice-month-picker',
-                xtype: 'monthpicker',
-                showButtons: false
-            },
-            {
-              xtype: 'button',
-              text: 'Pobierz faktury z danego miesiąca',
-              handler: function() {
-                  var picker = Ext.getCmp("invoice-month-picker");
-                  var month = picker.value[0];
-                  var year  = picker.value[1];
-                  
-                  if(year == null || month == null) {
-                      Ext.Msg.alert("Musisz wybrać miesiąc i rok");
-                  }
-                  
-                  Routing.generate("invoices_package", {month: month, year: year})
-              }
-            }
- */    
 })();
