@@ -7,7 +7,7 @@ Ext.require("Hatimeria.core.utils.ConfigManager", function(){
     
     manager.register('HatimeriaAdmin.users.UsersPanel', {
         columns: [
-            {header: 'Rabat', dataIndex: 'discount'}
+            {header: 'Rabat', dataIndex: 'discount', sortable: false}
         ]
     });
     
