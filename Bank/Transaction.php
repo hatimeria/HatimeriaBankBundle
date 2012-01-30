@@ -32,6 +32,8 @@ class Transaction
     
     protected $exchangeDisabled;
 
+    protected $logType = 0;
+
     public function __construct(Account $account, $amount = null, $currency = CurrencyCode::VIRTUAL)
     {
         $this->account  = $account;
@@ -158,4 +160,25 @@ class Transaction
     {
         return $this->log;
     }
+
+    public function hasLogType()
+    {
+        if($this->logType != 0)
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function setLogType($v)
+    {
+        $this->logType = $v;
+    }
+
+    public function getLogType()
+    {
+        return $this->logType;
+    }
+
 }
