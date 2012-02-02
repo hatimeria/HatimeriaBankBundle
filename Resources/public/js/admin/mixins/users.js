@@ -24,9 +24,6 @@ Ext.require("Hatimeria.core.utils.ConfigManager", function(){
                 name: 'discount',
                 fieldLabel: 'Rabat'
             }
-        ],
-        submitConfig: {
-            
-        }
+        ]
     });
 });
