@@ -4,7 +4,7 @@ namespace Hatimeria\BankBundle\Decimal;
 
 class Decimal
 {
-    const SCALE = 2;
+    public static $scale = 14;
     
     protected $amount;
 
@@ -29,7 +29,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
 
-        return new Decimal(bcadd($this->amount, $decimal->getAmount(), self::SCALE));
+        return new Decimal(bcadd($this->amount, $decimal->getAmount(), self::$scale));
     }
 
     public function mul($decimal)
@@ -38,7 +38,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
 
-        return new Decimal(bcmul($this->amount, $decimal->getAmount(), self::SCALE));
+        return new Decimal(bcmul($this->amount, $decimal->getAmount(), self::$scale));
     }
 
     public function div($decimal)
@@ -47,7 +47,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
 
-        return new Decimal(bcdiv($this->amount, $decimal->getAmount(), self::SCALE));
+        return new Decimal(bcdiv($this->amount, $decimal->getAmount(), self::$scale));
     }
 
     public function sub($decimal)
@@ -56,7 +56,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
 
-        return new Decimal(bcsub($this->amount, $decimal->getAmount(), self::SCALE));
+        return new Decimal(bcsub($this->amount, $decimal->getAmount(), self::$scale));
     }
     
     public function isEqualTo($decimal)
@@ -65,7 +65,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
         
-        return bccomp($this->amount, $decimal->getAmount(), self::SCALE) === 0;
+        return bccomp($this->amount, $decimal->getAmount(), self::$scale) === 0;
     }
     
     public function isGreaterThan($decimal)
@@ -74,7 +74,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
         
-        return bccomp($this->amount, $decimal->getAmount(), self::SCALE) === 1;
+        return bccomp($this->amount, $decimal->getAmount(), self::$scale) === 1;
     }
     
     public function isLowerThan($decimal)
@@ -83,7 +83,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
         
-        return bccomp($this->amount, $decimal->getAmount(), self::SCALE) === -1;
+        return bccomp($this->amount, $decimal->getAmount(), self::$scale) === -1;
     }
 
     public function __toString()
