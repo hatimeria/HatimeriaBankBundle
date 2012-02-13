@@ -4,7 +4,7 @@ namespace Hatimeria\BankBundle\Decimal;
 
 class Decimal
 {
-    const SCALE = 14;
+    const SCALE = 2;
     
     protected $amount;
 
@@ -47,7 +47,7 @@ class Decimal
             $decimal = new Decimal($decimal);
         }
 
-        return new Decimal(bcdiv($this->amount, $decimal->getAmount()), self::SCALE);
+        return new Decimal(bcdiv($this->amount, $decimal->getAmount(), self::SCALE));
     }
 
     public function sub($decimal)
@@ -57,6 +57,33 @@ class Decimal
         }
 
         return new Decimal(bcsub($this->amount, $decimal->getAmount(), self::SCALE));
+    }
+    
+    public function isEqualTo($decimal)
+    {
+        if (!$decimal instanceof Decimal) {
+            $decimal = new Decimal($decimal);
+        }
+        
+        return bccomp($this->amount, $decimal->getAmount(), self::SCALE) === 0;
+    }
+    
+    public function isGreaterThan($decimal)
+    {
+        if (!$decimal instanceof Decimal) {
+            $decimal = new Decimal($decimal);
+        }
+        
+        return bccomp($this->amount, $decimal->getAmount(), self::SCALE) === 1;
+    }
+    
+    public function isLowerThan($decimal)
+    {
+        if (!$decimal instanceof Decimal) {
+            $decimal = new Decimal($decimal);
+        }
+        
+        return bccomp($this->amount, $decimal->getAmount(), self::SCALE) === -1;
     }
 
     public function __toString()
