@@ -7,6 +7,11 @@ class Decimal
     public static $scale = 14;
     
     protected $amount;
+    
+    public static function setScale($scale)
+    {
+        self::$scale = $scale;
+    }
 
     public function __construct($value)
     {
