@@ -86,7 +86,7 @@ class Bank
         $this->beforeTransaction($transaction);
         $account = $transaction->getAccount();
 
-        if (bccomp($transaction->getAmount(), $account->getBalance(), Decimal::SCALE) === 1) {
+        if (bccomp($transaction->getAmount(), $account->getBalance(), Decimal::$scale) === 1) {
             // @todo add more debug information
             throw new NotEnoughFundException();
         }
@@ -103,7 +103,7 @@ class Bank
     
     public function transferFrozenFunds(Account $original, Account $destination, $amount)
     {
-        if (bccomp($original->getFrozen(), $amount, Decimal::SCALE) === -1) {
+        if (bccomp($original->getFrozen(), $amount, Decimal::$scale) === -1) {
             throw new NotEnoughFundException(sprintf("Not enough FROZEN founds %.30f < %.30f missing %.30f", $original->getFrozen(), $amount,
                $amount - $original->getFrozen()));
         }
@@ -118,7 +118,7 @@ class Bank
     {
         // @todo change into dual transaction - withdraw and deposit
 
-        if (bccomp($original->getBalance(), $amount, Decimal::SCALE) === -1) {
+        if (bccomp($original->getBalance(), $amount, Decimal::$scale) === -1) {
             throw new NotEnoughFundException("Not enough founds");
         }
         
@@ -130,7 +130,7 @@ class Bank
     
     public function freezeFunds(Account $account, $amount)
     {
-        if (bccomp($account->getBalance(), $amount, Decimal::SCALE) === -1) {
+        if (bccomp($account->getBalance(), $amount, Decimal::$scale) === -1) {
             throw new NotEnoughFundException("Not enough founds");
         }
         
