@@ -14,7 +14,7 @@
                 id: 'invoice-store',
                 model: "HatimeriaBank.invoices.model.InvoiceModel",
                 directFn: Actions.HatimeriaBank_Invoice.all,
-                pageSize: 25     
+                pageSize: 10     
             };
 
             Ext.apply(config, cfg || {});
