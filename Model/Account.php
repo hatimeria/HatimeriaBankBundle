@@ -114,7 +114,7 @@ abstract class Account
     
     public function setSubscriptionDiscount($v)
     {
-        $this->subscriptionDiscount = $v;
+        $this->subscriptionDiscount = (float)$v;
     }
     
     public function hasFullSubscriptionDiscount()
